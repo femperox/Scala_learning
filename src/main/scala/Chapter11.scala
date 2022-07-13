@@ -131,19 +131,66 @@ object Chapter11 extends App
 
   //3. Реализуйте класс Matrix – выберите сами, какую матрицу реализовать:
   //2 × 2, квадратную произвольного размера или матри-
-  //цу m × n. Реализуйте операции + и *. Последняя должна также
-  //позволять выполнять умножение на скаляр, например mat * 2.
+  //цу m × n. Реализуйте операции +.
   //Единственный элемент матрицы должен быть доступен как
   //mat(row, col).
 
-  class Matrix(val n: Int, val m:Int, var els: Array[Array[Float]])
+  class Matrix
   {
 
-    def ?=(other: Matrix) = (this.m == other.m) && (this.n == other.n)
+    var n,m  = 1
+    var matrix = Array.tabulate(n,m)( (x,y) => 0f )
+
+    def this(n: Int, m:Int) =
+    {
+      this()
+      this.n = n
+      this.m = m
+      matrix = Array.tabulate(n,m)( (x,y) => 0f )
 
 
+    }
+
+    def this(array: Array[Array[Float]]) =
+    {
+      this()
+      n = array.length
+      m = array(0).length
+      matrix = array
+    }
+
+    def ?+(other: Matrix) = (this.m == other.m) && (this.n == other.n)
+
+    def +(other: Matrix): Either[String, Matrix] =
+    {
+      if (this ?+ other)
+      {  val m = Array.tabulate(this.n,this.m)( (i,j) => this.matrix(i)(j)+other.matrix(i)(j))
+
+         Right(new Matrix(m))
+
+      }
+      else
+        Left("Different dimensions")
+    }
+
+
+    override def toString: String =
+    {
+      var s = ""
+      for (i <- 0 until n)
+      {
+        for (j <- 0 until m) s += this.matrix(i)(j) + " "
+        s += "\n"
+      }
+      s
+    }
 
   }
+
+  val matr: Array[Array[Float]] = Array(Array(1,2), Array(2,3), Array(4,5))
+  val m = new Matrix(matr)
+  val m1 = new Matrix(3, 2)
+  println(m+m1)
 
 
 
